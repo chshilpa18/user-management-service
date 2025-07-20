@@ -1,8 +1,10 @@
 package com.example.myapp.userservice.model;
 
 
+import com.example.myapp.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
+
 import java.util.UUID;
 
 @Entity
@@ -14,10 +16,9 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Role {
+public class Role extends BaseEntity {
 
     @Id
-    @GeneratedValue
     private UUID id;
 
     @Column(nullable = false)

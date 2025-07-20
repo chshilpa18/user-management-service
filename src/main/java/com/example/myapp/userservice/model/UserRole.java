@@ -1,7 +1,9 @@
 package com.example.myapp.userservice.model;
 
+import com.example.myapp.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
+
 import java.time.Instant;
 import java.util.UUID;
 
@@ -12,15 +14,21 @@ UserRole ties a User to a Role within an Organization.
 Unique constraints prevent duplicates.
 * */
 @Entity
-@Table(name = "user_roles", uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"user_id", "org_id", "role_id"})
-})
+@Table(
+        name = "user_roles",
+        uniqueConstraints = @UniqueConstraint(columnNames = {"user_id", "org_id", "role_id"}),
+        indexes = {
+                @Index(name = "idx_user_org", columnList = "user_id, org_id"),
+                @Index(name = "idx_role_org", columnList = "role_id, org_id")
+        }
+)
+
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class UserRole {
+public class UserRole extends BaseEntity {
 
     @Id
     @GeneratedValue

@@ -1,8 +1,13 @@
 package com.example.myapp.userservice.model;
 
+import com.example.myapp.common.BaseEntity;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.*;
+
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -12,12 +17,13 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Organization {
+public class Organization extends BaseEntity {
 
     @Id
     @GeneratedValue
     private UUID id;
 
+    @NotBlank
     @Column(nullable = false, unique = true)
     private String name;
 
@@ -41,4 +47,8 @@ public class Organization {
             status = Status.ACTIVE;
         }
     }
+
+    @OneToMany(mappedBy = "organization", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<User> users = new ArrayList<>();
 }

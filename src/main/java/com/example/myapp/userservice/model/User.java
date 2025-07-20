@@ -1,10 +1,16 @@
 package com.example.myapp.userservice.model;
 
 
+import com.example.myapp.common.BaseEntity;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import lombok.*;
+
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -14,7 +20,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class User {
+public class User extends BaseEntity {
 
     @Id
     @GeneratedValue
@@ -24,9 +30,11 @@ public class User {
     @Column(nullable = false, unique = true)
     private String email;
 
+    @NotBlank
     @Column(name = "password_hash", nullable = false)
     private String passwordHash;
 
+    @NotBlank
     @Column(name = "full_name", nullable = false)
     private String fullName;
 
@@ -56,6 +64,17 @@ public class User {
             status = Status.ACTIVE;
         }
     }
+
+
+
+    // Many users belong to one org
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "organization_id", nullable = false)
+    @JsonIgnore //prevents infinite loop in serialization
+    private Organization organization;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<UserRole> userRoles = new ArrayList<>();
 
     /**
      *  So when would you add @OneToMany + @JsonIgnore?
